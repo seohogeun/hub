@@ -61,7 +61,7 @@
 <script>
 (async function(){
   const $=id=>document.getElementById(id);
-  let D=null; try{D=await (await fetch('data.json?'+Date.now())).json();}catch(e){$('err').textContent='자료를 불러오지 못했습니다. 잠시 후 다시 시도하세요.';}
+  let D=null; try{D=await (await fetch('data.json?'+Date.now(),{cache:'no-store'})).json();}catch(e){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';}
   async function sha(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,20);}
   const KIND={form:['📮','숙제 오답폼','제출하기',''],video:['🎬','수업 영상','영상 보기','v'],notice:['📢','공지','','']};
   const fmt=s=>s?String(s).slice(5,10).replace('-','.'):'';
@@ -71,12 +71,13 @@
   $('adminOut').onclick=e=>{e.preventDefault();ADMIN=false;$('logout').textContent='다른 번호';$('t6').value='';show('login');};
   function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
     $('clsName').textContent=c.name;const L=$('list');L.innerHTML='';
+    if(c.archived){L.innerHTML='<div class="card empty">지난 학기 반입니다. 새 반 배정은 선생님께 문의하세요.</div>';}
     if(!c.items.length){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
     for(const it of c.items){const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';
       d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+(it.url&&k[2]?'<a class="go '+k[3]+'" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+k[2]+'</a>':'')+'</div>';L.appendChild(d);}
     show('home');window.scrollTo(0,0);}
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-  async function enter(t6,remember){if(!D)return;if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
+  async function enter(t6,remember){if(!D){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';return;}if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
     const h=await sha(D.salt+':'+t6);if(D.adminHash&&h===D.adminHash){ADMIN=true;adminHome();return;}const cls=D.students[h];if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
     
     if(cls.length===1){render(cls[0]);return;}
@@ -91,7 +92,7 @@
   const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const isAndroid=/android/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line[/]/i.test(ua);
   let deferred=null; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;});
   if(standalone){ $('install').innerHTML='<b>✅ 앱으로 열렸어요</b><div class="sub" style="margin-top:4px;">홈 화면 아이콘으로 잘 들어왔습니다.</div>'; }
-  $('installBtn').onclick=async()=>{
+  if($('installBtn')) $('installBtn').onclick=async()=>{
     const how=$('installHow'); how.classList.remove('hide');
     if(deferred){ try{ deferred.prompt(); await deferred.userChoice; }catch(e){} deferred=null; how.innerHTML='설치창에서 <b>설치</b>를 누르면 홈 화면에 아이콘이 생겨요.'; return; }
     if(inApp&&isAndroid){ how.innerHTML='카톡 안에서는 추가가 안 돼요. 아래 버튼으로 <b>크롬에서 열기</b> → 크롬에서 다시 [홈 화면에 추가]를 누르세요.<br><a href="intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;end" style="display:inline-block;margin-top:8px;padding:9px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none;font-weight:700;">크롬에서 열기</a>'; return; }
