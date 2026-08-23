@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="서호근수학">
 <title>서호근 선생님 학생 허브</title>
 <style>
   :root{--ink:#111;--mute:#6b7280;--line:#e5e7eb;--red:#c33d2e;--bg:#f6f6f4;}
@@ -35,10 +36,11 @@
   .hide{display:none}
 </style></head><body><div class="wrap">
   <div class="top"><b>STUDENT HUB</b><span>수학강사 서호근</span></div>
+  <div id="install" class="card hide" style="border-color:#111;"><b>📱 홈 화면에 앱으로 추가</b><div class="sub" style="margin:4px 0 8px;">다음부터 아이콘 한 번으로 열려요. <span id="installHow"></span></div><button id="installBtn" class="hide" style="margin-top:0;">앱으로 추가</button><a href="#" id="installNo" style="display:block;text-align:center;font-size:12px;color:var(--mute);margin-top:8px;">다음에</a></div>
   <div id="login">
     <div class="hero"><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
     <h2 class="sec">ENTER</h2>
-    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숙제 오답폼·수업 안내는 내 반 페이지에서. 한 번 입력하면 이 폰에 기억됩니다.</div>
+    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숙제 오답폼·수업 안내는 내 반 페이지에서. 입력할 때마다 번호를 넣습니다(친구 폰으로 들어와도 괜찮아요).</div>
       <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
       <button id="go">들어가기</button><div id="err" class="err"></div></div>
     <h2 class="sec">INDEX</h2>
@@ -48,6 +50,7 @@
       <div><div class="ic">📢</div><b>공지</b><span>보강·일정 한 줄 안내</span></div>
     </div>
   </div>
+  <div id="admin" class="hide"><div class="cls"><h2>👨‍🏫 관리자 보기</h2><a href="#" id="adminOut">나가기</a></div><div class="cls-sub">반을 고르면 학생이 보는 화면 그대로 열립니다</div><div id="adminList"></div></div>
   <div id="pick" class="card hide"><h3 style="font-size:18px;">반을 골라주세요</h3><div class="sub">같은 번호의 학생이 둘 이상이라 반을 한 번 더 묻습니다.</div><div id="pickList"></div></div>
   <div id="home" class="hide"><div class="cls"><h2 id="clsName"></h2><a href="#" id="logout">다른 번호</a></div><div class="cls-sub">수학강사 서호근 · 최신순</div><div id="list"></div></div>
   <div class="foot">나의 자부심이 너의 자신감으로<br>수학강사 서호근</div>
@@ -59,7 +62,10 @@
   async function sha(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,20);}
   const KIND={form:['📮','숙제 오답폼','제출하기',''],video:['🎬','수업 영상','영상 보기','v'],notice:['📢','공지','','']};
   const fmt=s=>s?String(s).slice(5,10).replace('-','.'):'';
-  function show(id){for(const k of ['login','pick','home'])$(k).classList.toggle('hide',k!==id);}
+  function show(id){for(const k of ['login','pick','home','admin'])$(k).classList.toggle('hide',k!==id);}
+  let ADMIN=false;
+  function adminHome(){const L=$('adminList');L.innerHTML='';for(const [cid,c] of Object.entries(D.classes)){const b=document.createElement('button');b.className='ghost';b.textContent=c.name+' ('+c.items.length+')';b.onclick=()=>{render(cid);$('logout').textContent='관리자 목록';};L.appendChild(b);}show('admin');}
+  $('adminOut').onclick=e=>{e.preventDefault();ADMIN=false;$('logout').textContent='다른 번호';$('t6').value='';show('login');};
   function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
     $('clsName').textContent=c.name;const L=$('list');L.innerHTML='';
     if(!c.items.length){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
@@ -68,13 +74,23 @@
     show('home');window.scrollTo(0,0);}
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   async function enter(t6,remember){if(!D)return;if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
-    const h=await sha(D.salt+':'+t6);const cls=D.students[h];if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
-    if(remember)try{localStorage.setItem('hub_t6',t6);}catch(e){}
+    const h=await sha(D.salt+':'+t6);if(D.adminHash&&h===D.adminHash){ADMIN=true;adminHome();return;}const cls=D.students[h];if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
+    
     if(cls.length===1){render(cls[0]);return;}
-    const saved=localStorage.getItem('hub_cls');if(saved&&cls.includes(saved)){render(saved);return;}
-    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=(D.classes[cid]||{}).name||cid;b.onclick=()=>{try{localStorage.setItem('hub_cls',cid);}catch(e){}render(cid);};P.appendChild(b);}show('pick');}
+    
+    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=(D.classes[cid]||{}).name||cid;b.onclick=()=>render(cid);P.appendChild(b);}show('pick');}
   $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
-  $('logout').onclick=e=>{e.preventDefault();localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
-  const s=localStorage.getItem('hub_t6');if(s&&D)enter(s,false);
+  $('logout').onclick=e=>{e.preventDefault();if(ADMIN){adminHome();return;}localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
+  try{localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');}catch(e){}
+  // 📱 PWA: 서비스워커 등록 + 설치 배너(안드로이드=버튼 / 아이폰=공유→홈 화면에 추가 안내). '다음에'는 7일 숨김.
+  try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); }catch(e){}
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  const snoozed=(()=>{try{return +localStorage.getItem('hub_install_snooze')>Date.now();}catch(e){return false;}})();
+  let deferred=null;
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;if(!standalone&&!snoozed){$('installBtn').classList.remove('hide');$('installHow').textContent='';$('install').classList.remove('hide');}});
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isIOS&&!standalone&&!snoozed){$('installHow').innerHTML='아이폰: 아래 <b>공유(□↑)</b> → <b>홈 화면에 추가</b>';$('install').classList.remove('hide');}
+  $('installBtn').onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice;}catch(e){}deferred=null;$('install').classList.add('hide');};
+  $('installNo').onclick=e=>{e.preventDefault();try{localStorage.setItem('hub_install_snooze',String(Date.now()+7*86400000));}catch(e){}$('install').classList.add('hide');}; // 자동 저장 폐지(2026-08-23 선생님 — 친구 폰으로 들어가는 학생 배려): 예전 저장값도 지움
 })();
 </script></body></html>
