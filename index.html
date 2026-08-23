@@ -40,7 +40,7 @@
   <div id="login">
     <div class="hero"><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
     <h2 class="sec">ENTER</h2>
-    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숙제 오답폼·수업 안내는 내 반 페이지에서. 입력할 때마다 번호를 넣습니다(친구 폰으로 들어와도 괜찮아요).</div>
+    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">수험번호 뒤 6자리를 입력하세요.</div>
       <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
       <button id="go">들어가기</button><div id="err" class="err"></div></div>
     <h2 class="sec">INDEX</h2>
@@ -88,8 +88,9 @@
   const snoozed=(()=>{try{return +localStorage.getItem('hub_install_snooze')>Date.now();}catch(e){return false;}})();
   let deferred=null;
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;if(!standalone&&!snoozed){$('installBtn').classList.remove('hide');$('installHow').textContent='';$('install').classList.remove('hide');}});
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  if(isIOS&&!standalone&&!snoozed){$('installHow').innerHTML='아이폰: 아래 <b>공유(□↑)</b> → <b>홈 화면에 추가</b>';$('install').classList.remove('hide');}
+  const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line//i.test(ua);
+  function manualHint(){ if(inApp) return '지금은 카톡·앱 안 브라우저예요 → 오른쪽 위/아래 <b>⋯ 메뉴</b> → <b>다른 브라우저(크롬/사파리)로 열기</b> 후 추가하세요'; if(isIOS) return '아이폰: 아래 <b>공유(□↑)</b> → <b>홈 화면에 추가</b>'; return '안드로이드: 크롬 오른쪽 위 <b>⋮ 메뉴</b> → <b>홈 화면에 추가</b>(또는 <b>앱 설치</b>)'; }
+  setTimeout(()=>{ if(standalone||snoozed||deferred) return; $('installHow').innerHTML=manualHint(); $('install').classList.remove('hide'); },1500);
   $('installBtn').onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice;}catch(e){}deferred=null;$('install').classList.add('hide');};
   $('installNo').onclick=e=>{e.preventDefault();try{localStorage.setItem('hub_install_snooze',String(Date.now()+7*86400000));}catch(e){}$('install').classList.add('hide');}; // 자동 저장 폐지(2026-08-23 선생님 — 친구 폰으로 들어가는 학생 배려): 예전 저장값도 지움
 })();
