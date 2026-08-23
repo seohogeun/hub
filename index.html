@@ -36,7 +36,7 @@
 </style></head><body><div class="wrap">
   <div class="top"><b>STUDENT HUB</b><span>수학강사 서호근</span></div>
   <div id="login">
-    <div class="hero"><div class="en">PERSONAL REVIEW</div><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
+    <div class="hero"><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
     <h2 class="sec">ENTER</h2>
     <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숙제 오답폼·수업 안내는 내 반 페이지에서. 한 번 입력하면 이 폰에 기억됩니다.</div>
       <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
@@ -47,7 +47,6 @@
       <div><div class="ic">🎬</div><b>수업 영상</b><span>그날 수업 다시 보기</span></div>
       <div><div class="ic">📢</div><b>공지</b><span>보강·일정 한 줄 안내</span></div>
     </div>
-    <div class="num"><div class="big" id="cnt">—<small>CLASSES</small></div><div class="brand">서호근 선생님</div></div>
   </div>
   <div id="pick" class="card hide"><h3 style="font-size:18px;">반을 골라주세요</h3><div class="sub">같은 번호의 학생이 둘 이상이라 반을 한 번 더 묻습니다.</div><div id="pickList"></div></div>
   <div id="home" class="hide"><div class="cls"><h2 id="clsName"></h2><a href="#" id="logout">다른 번호</a></div><div class="cls-sub">수학강사 서호근 · 최신순</div><div id="list"></div></div>
@@ -57,7 +56,6 @@
 (async function(){
   const $=id=>document.getElementById(id);
   let D=null; try{D=await (await fetch('data.json?'+Date.now())).json();}catch(e){$('err').textContent='자료를 불러오지 못했습니다. 잠시 후 다시 시도하세요.';}
-  if(D){$('cnt').innerHTML=Object.keys(D.classes).length+'<small>CLASSES</small>';}
   async function sha(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,20);}
   const KIND={form:['📮','숙제 오답폼','제출하기',''],video:['🎬','수업 영상','영상 보기','v'],notice:['📢','공지','','']};
   const fmt=s=>s?String(s).slice(5,10).replace('-','.'):'';
