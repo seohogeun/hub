@@ -38,7 +38,7 @@
   <div id="login">
     <div class="hero"><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
     <h2 class="sec">ENTER</h2>
-    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숙제 오답폼·수업 안내는 내 반 페이지에서. 입력할 때마다 번호를 넣습니다(친구 폰으로 들어와도 괜찮아요).</div>
+    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숙제 오답폼·수업 안내는 내 반 페이지에서. 한 번 입력하면 이 폰에 기억됩니다.</div>
       <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
       <button id="go">들어가기</button><div id="err" class="err"></div></div>
     <h2 class="sec">INDEX</h2>
@@ -69,12 +69,12 @@
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   async function enter(t6,remember){if(!D)return;if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
     const h=await sha(D.salt+':'+t6);const cls=D.students[h];if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
-    
+    if(remember)try{localStorage.setItem('hub_t6',t6);}catch(e){}
     if(cls.length===1){render(cls[0]);return;}
-    
-    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=(D.classes[cid]||{}).name||cid;b.onclick=()=>render(cid);P.appendChild(b);}show('pick');}
+    const saved=localStorage.getItem('hub_cls');if(saved&&cls.includes(saved)){render(saved);return;}
+    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=(D.classes[cid]||{}).name||cid;b.onclick=()=>{try{localStorage.setItem('hub_cls',cid);}catch(e){}render(cid);};P.appendChild(b);}show('pick');}
   $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
   $('logout').onclick=e=>{e.preventDefault();localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
-  try{localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');}catch(e){} // 자동 저장 폐지(2026-08-23 선생님 — 친구 폰으로 들어가는 학생 배려): 예전 저장값도 지움
+  const s=localStorage.getItem('hub_t6');if(s&&D)enter(s,false);
 })();
 </script></body></html>
