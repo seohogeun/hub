@@ -73,9 +73,12 @@
   function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
     $('clsName').textContent=c.name;$('whoLine').textContent=WHO?(c.name+' '+WHO+' 학생'):(ADMIN?'관리자 보기':'');const L=$('list');L.innerHTML='';
     if(c.archived){L.innerHTML='<div class="card empty">지난 학기 반입니다. 새 반 배정은 선생님께 문의하세요.</div>';}
-    if(!c.items.length){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
-    for(const it of c.items){const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';
-      d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+(it.url&&k[2]?'<a class="go '+k[3]+'" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+k[2]+'</a>':'')+'</div>';L.appendChild(d);}
+    if(!c.items.length&&!c.archived){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
+    // 구역 나누기(2026-08-23 선생님 — "오답 제출 / 수업 영상 다시보기"로 구분): 📢 공지 → 📮 오답 제출 → 🎬 수업 영상 다시보기
+    const SEC=[['notice','NOTICE','📢 공지'],['form','HOMEWORK','📮 오답 제출'],['video','REPLAY','🎬 수업 영상 다시보기']];
+    const mk=(it)=>{const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';
+      d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+(it.url&&k[2]?'<a class="go '+k[3]+'" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+k[2]+'</a>':'')+'</div>';return d;}
+    for(const [kind,en,ko] of SEC){const its=c.items.filter(it=>it.kind===kind);if(!its.length)continue;const h=document.createElement('h2');h.className='sec';h.innerHTML=en+' <span style="letter-spacing:0;color:var(--ink);font-size:13px;margin-left:6px;">'+ko+' <span style="color:var(--mute);font-weight:500;">'+its.length+'</span></span>';L.appendChild(h);for(const it of its)L.appendChild(mk(it));}
     show('home');window.scrollTo(0,0);}
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   async function enter(t6,remember){if(!D){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';return;}if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
