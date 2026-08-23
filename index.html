@@ -36,13 +36,16 @@
   .hide{display:none}
 </style></head><body><div class="wrap">
   <div class="top"><b>STUDENT HUB</b><span>수학강사 서호근</span></div>
-  <div id="install" class="card hide" style="border-color:#111;"><b>📱 홈 화면에 앱으로 추가</b><div class="sub" style="margin:4px 0 8px;">다음부터 아이콘 한 번으로 열려요. <span id="installHow"></span></div><button id="installBtn" class="hide" style="margin-top:0;">앱으로 추가</button><a href="#" id="installNo" style="display:block;text-align:center;font-size:12px;color:var(--mute);margin-top:8px;">다음에</a></div>
   <div id="login">
     <div class="hero"><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
     <h2 class="sec">ENTER</h2>
     <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">수험번호 뒤 6자리를 입력하세요.</div>
       <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
       <button id="go">들어가기</button><div id="err" class="err"></div></div>
+    <h2 class="sec">APP</h2>
+    <div class="card" id="install" style="border-color:#111;"><b>📱 홈 화면에 추가</b><div class="sub" style="margin:4px 0 10px;">한 번 추가해 두면 앱처럼 아이콘으로 바로 열려요.</div>
+      <button id="installBtn" style="margin-top:0;">홈 화면에 추가</button>
+      <div id="installHow" class="sub hide" style="margin:10px 0 0;line-height:1.7;"></div></div>
     <h2 class="sec">INDEX</h2>
     <div class="feat">
       <div><div class="ic">📮</div><b>숙제 오답폼</b><span>틀린 번호만 체크해서 제출</span></div>
@@ -82,16 +85,19 @@
   $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
   $('logout').onclick=e=>{e.preventDefault();if(ADMIN){adminHome();return;}localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
   try{localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');}catch(e){}
-  // 📱 PWA: 서비스워커 등록 + 설치 배너(안드로이드=버튼 / 아이폰=공유→홈 화면에 추가 안내). '다음에'는 7일 숨김.
+  // 📱 PWA(2026-08-23 선생님 — "항상 메인에 홈 화면에 추가"): 고정 섹션. 크롬 설치 신호가 있으면 설치창, 없으면 플랫폼별 순서 안내.
   try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); }catch(e){}
   const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-  const snoozed=(()=>{try{return +localStorage.getItem('hub_install_snooze')>Date.now();}catch(e){return false;}})();
-  let deferred=null;
-  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;if(!standalone&&!snoozed){$('installBtn').classList.remove('hide');$('installHow').textContent='';$('install').classList.remove('hide');}});
-  const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line//i.test(ua);
-  function manualHint(){ if(inApp) return '지금은 카톡·앱 안 브라우저예요 → 오른쪽 위/아래 <b>⋯ 메뉴</b> → <b>다른 브라우저(크롬/사파리)로 열기</b> 후 추가하세요'; if(isIOS) return '아이폰: 아래 <b>공유(□↑)</b> → <b>홈 화면에 추가</b>'; return '안드로이드: 크롬 오른쪽 위 <b>⋮ 메뉴</b> → <b>홈 화면에 추가</b>(또는 <b>앱 설치</b>)'; }
-  setTimeout(()=>{ if(standalone||snoozed||deferred) return; $('installHow').innerHTML=manualHint(); $('install').classList.remove('hide'); },1500);
-  $('installBtn').onclick=async()=>{if(!deferred)return;deferred.prompt();try{await deferred.userChoice;}catch(e){}deferred=null;$('install').classList.add('hide');};
-  $('installNo').onclick=e=>{e.preventDefault();try{localStorage.setItem('hub_install_snooze',String(Date.now()+7*86400000));}catch(e){}$('install').classList.add('hide');}; // 자동 저장 폐지(2026-08-23 선생님 — 친구 폰으로 들어가는 학생 배려): 예전 저장값도 지움
+  const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const isAndroid=/android/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line//i.test(ua);
+  let deferred=null; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;});
+  if(standalone){ $('install').innerHTML='<b>✅ 앱으로 열렸어요</b><div class="sub" style="margin-top:4px;">홈 화면 아이콘으로 잘 들어왔습니다.</div>'; }
+  $('installBtn').onclick=async()=>{
+    const how=$('installHow'); how.classList.remove('hide');
+    if(deferred){ try{ deferred.prompt(); await deferred.userChoice; }catch(e){} deferred=null; how.innerHTML='설치창에서 <b>설치</b>를 누르면 홈 화면에 아이콘이 생겨요.'; return; }
+    if(inApp&&isAndroid){ how.innerHTML='카톡 안에서는 추가가 안 돼요. 아래 버튼으로 <b>크롬에서 열기</b> → 크롬에서 다시 [홈 화면에 추가]를 누르세요.<br><a href="intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;end" style="display:inline-block;margin-top:8px;padding:9px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none;font-weight:700;">크롬에서 열기</a>'; return; }
+    if(inApp&&isIOS){ how.innerHTML='카톡 안에서는 추가가 안 돼요. 오른쪽 아래 <b>⋯</b> → <b>Safari로 열기</b> → Safari에서 아래 <b>공유(□↑)</b> → <b>홈 화면에 추가</b>'; return; }
+    if(isIOS){ how.innerHTML='아래 <b>공유(□↑)</b> 버튼 → 목록에서 <b>홈 화면에 추가</b> → <b>추가</b>'; return; }
+    how.innerHTML='크롬 오른쪽 위 <b>⋮ 메뉴</b> → <b>홈 화면에 추가</b>(또는 <b>앱 설치</b>) → <b>추가</b>';
+  };
 })();
 </script></body></html>
