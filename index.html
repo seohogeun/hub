@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>깊은생각 수학학원 학생 허브</title>
+<style>
+  :root{--ink:#111;--mute:#6b7280;--line:#e5e7eb;--red:#c33d2e;--bg:#fafafa;}
+  *{box-sizing:border-box;margin:0;padding:0} body{font-family:-apple-system,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 16px 60px}
+  .top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:18px}
+  .top b{letter-spacing:3px;font-size:15px} .top span{color:var(--mute);font-size:12px;letter-spacing:1px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+  h1{font-size:22px;letter-spacing:-.5px;margin-bottom:4px} .sub{color:var(--mute);font-size:13px;margin-bottom:14px}
+  input{width:100%;font-size:22px;letter-spacing:6px;text-align:center;padding:12px;border:1.5px solid var(--ink);border-radius:10px;outline:none}
+  input:focus{border-color:var(--red)} button{width:100%;margin-top:10px;padding:13px;font-size:16px;font-weight:700;border:0;border-radius:10px;background:var(--ink);color:#fff}
+  button.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--ink)} .err{color:var(--red);font-size:13px;margin-top:8px;min-height:18px}
+  .cls{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 14px} .cls h2{font-size:20px} .cls a{font-size:12px;color:var(--mute)}
+  .it{display:flex;gap:12px;align-items:flex-start} .it .ic{font-size:22px;line-height:1} .it .t{font-weight:700;font-size:15px;line-height:1.35} .it .m{color:var(--mute);font-size:12px;margin-top:3px}
+  .it .due{color:var(--red);font-weight:700} .it a.go{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:8px;background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:14px}
+  .it a.go.v{background:var(--ink)} .empty{color:var(--mute);text-align:center;padding:30px 0}
+  .foot{text-align:center;color:var(--mute);font-size:11px;margin-top:30px;letter-spacing:1px}
+  .hide{display:none}
+</style></head><body><div class="wrap">
+  <div class="top"><b>STUDENT HUB</b><span>깊은생각 수학학원</span></div>
+  <div id="login" class="card">
+    <h1>수험번호 뒤 6자리</h1><div class="sub">숙제 오답폼·수업 안내를 보려면 수험번호 뒤 6자리를 입력하세요.</div>
+    <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
+    <button id="go">들어가기</button><div id="err" class="err"></div>
+  </div>
+  <div id="pick" class="card hide"><h1>반을 골라주세요</h1><div class="sub">같은 번호의 학생이 둘 이상이라 반을 한 번 더 묻습니다.</div><div id="pickList"></div></div>
+  <div id="home" class="hide"><div class="cls"><h2 id="clsName"></h2><a href="#" id="logout">다른 번호</a></div><div id="list"></div></div>
+  <div class="foot">나의 자부심이 너의 자신감으로 · 깊은생각 서호근</div>
+</div>
+<script>
+(async function(){
+  const $=id=>document.getElementById(id);
+  let D=null; try{D=await (await fetch('data.json?'+Date.now())).json();}catch(e){$('err').textContent='자료를 불러오지 못했습니다. 잠시 후 다시 시도하세요.';}
+  async function sha(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-256',b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,20);}
+  const KIND={form:['📮','숙제 오답폼','제출하기',''],video:['🎬','수업 영상','영상 보기','v'],notice:['📢','공지','','']};
+  const fmt=s=>s?String(s).slice(5,10).replace('-','.'):'';
+  function show(id){for(const k of ['login','pick','home'])$(k).classList.toggle('hide',k!==id);}
+  function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
+    $('clsName').textContent=c.name;const L=$('list');L.innerHTML='';
+    if(!c.items.length){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
+    for(const it of c.items){const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';
+      d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+(it.url&&k[2]?'<a class="go '+k[3]+'" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+k[2]+'</a>':'')+'</div>';L.appendChild(d);}
+    show('home');}
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  async function enter(t6,remember){if(!D)return;if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
+    const h=await sha(D.salt+':'+t6);const cls=D.students[h];if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
+    if(remember)try{localStorage.setItem('hub_t6',t6);}catch(e){}
+    if(cls.length===1){render(cls[0]);return;}
+    const saved=localStorage.getItem('hub_cls');if(saved&&cls.includes(saved)){render(saved);return;}
+    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=(D.classes[cid]||{}).name||cid;b.onclick=()=>{try{localStorage.setItem('hub_cls',cid);}catch(e){}render(cid);};P.appendChild(b);}show('pick');}
+  $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
+  $('logout').onclick=e=>{e.preventDefault();localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
+  const s=localStorage.getItem('hub_t6');if(s&&D)enter(s,false);
+})();
+</script></body></html>
