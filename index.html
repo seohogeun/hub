@@ -76,14 +76,17 @@
     if(!c.items.length&&!c.archived){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
     // 구역 나누기(2026-08-23 선생님 — "오답 제출 / 수업 영상 다시보기"로 구분): 📢 공지 → 📮 오답 제출 → 🎬 수업 영상 다시보기
     const SEC=[['notice','NOTICE','📢 공지'],['form','HOMEWORK','📮 오답 제출'],['video','REPLAY','🎬 수업 영상 다시보기']];
-    const mk=(it)=>{const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';
+    const mk=(it)=>{const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';d.dataset.id=it.id;d.dataset.kind=it.kind;
       // ✅ 제출 상태(폼): 제출 완료 시각 / 마감 지남(그래도 제출 가능 — 선생님 "실수로 늦을 수도")
       let stat='';let btn=k[2];
       if(it.kind==='form'){const ts=it.subs&&HASH&&it.subs[HASH];const late=it.due&&(new Date(it.due+'T23:59:59')<new Date());
-        if(ts){const t=new Date(ts);stat='<div style="margin-top:6px;color:#16a34a;font-weight:700;font-size:13px;">✅ '+fmt(ts)+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+' 제출 완료</div>';btn='다시 제출하기';}
-        else if(late){stat='<div style="margin-top:6px;color:#c33d2e;font-weight:700;font-size:13px;">⏰ 마감 지남 — 그래도 제출할 수 있어요</div>';}
-        else if(HASH&&it.subs){stat='<div style="margin-top:6px;color:var(--mute);font-size:12px;">아직 제출 전</div>';}}
+        if(ts){try{localStorage.removeItem('hub_went_'+it.id);}catch(e){} const t=new Date(ts);stat='<div style="margin-top:6px;color:#16a34a;font-weight:700;font-size:13px;">✅ '+fmt(ts)+' '+String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+' 제출 완료</div>';btn='다시 제출하기';}
+        else { let went=null; try{ went=localStorage.getItem('hub_went_'+it.id); }catch(e){}
+          if(went){const g=new Date(+went);stat='<div style="margin-top:6px;color:#b45309;font-weight:700;font-size:13px;">🕒 '+fmt(g.toISOString().slice(0,10))+' '+String(g.getHours()).padStart(2,'0')+':'+String(g.getMinutes()).padStart(2,'0')+' 제출하러 이동함 — 확인 중(보통 5분 안에 ✅로 바뀜)</div>';}
+          else if(late){stat='<div style="margin-top:6px;color:#c33d2e;font-weight:700;font-size:13px;">⏰ 마감 지남 — 그래도 제출할 수 있어요</div>';}
+          else if(HASH&&it.subs){stat='<div style="margin-top:6px;color:var(--mute);font-size:12px;">아직 제출 전</div>';} } }
       d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+stat+(it.url&&k[2]?'<a class="go '+k[3]+(it.kind==='form'&&it.subs&&HASH&&it.subs[HASH]?' v':'')+'" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+btn+'</a>':'')+'</div>';return d;}
+    L.addEventListener('click',e=>{const a=e.target.closest('a.go');if(!a)return;const card=a.closest('.it');const id=card&&card.dataset.id;if(id&&card.dataset.kind==='form'){try{localStorage.setItem('hub_went_'+id,String(Date.now()));}catch(e){}setTimeout(()=>render(cid),300);}});
     for(const [kind,en,ko] of SEC){const its=c.items.filter(it=>it.kind===kind);if(!its.length)continue;const h=document.createElement('h2');h.className='sec';h.innerHTML=en+' <span style="letter-spacing:0;color:var(--ink);font-size:13px;margin-left:6px;">'+ko+' <span style="color:var(--mute);font-weight:500;">'+its.length+'</span></span>';L.appendChild(h);for(const it of its)L.appendChild(mk(it));}
     show('home');window.scrollTo(0,0);}
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
