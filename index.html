@@ -88,7 +88,7 @@
   // 📱 PWA(2026-08-23 선생님 — "항상 메인에 홈 화면에 추가"): 고정 섹션. 크롬 설치 신호가 있으면 설치창, 없으면 플랫폼별 순서 안내.
   try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); }catch(e){}
   const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-  const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const isAndroid=/android/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line//i.test(ua);
+  const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const isAndroid=/android/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line[/]/i.test(ua);
   let deferred=null; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;});
   if(standalone){ $('install').innerHTML='<b>✅ 앱으로 열렸어요</b><div class="sub" style="margin-top:4px;">홈 화면 아이콘으로 잘 들어왔습니다.</div>'; }
   $('installBtn').onclick=async()=>{
