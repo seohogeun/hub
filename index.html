@@ -55,7 +55,7 @@
   </div>
   <div id="admin" class="hide"><div class="cls"><h2>👨‍🏫 관리자 보기</h2><a href="#" id="adminOut">나가기</a></div><div class="cls-sub">반을 고르면 학생이 보는 화면 그대로 열립니다</div><div id="adminList"></div></div>
   <div id="pick" class="card hide"><h3 style="font-size:18px;">반을 골라주세요</h3><div class="sub">같은 번호의 학생이 둘 이상이라 반을 한 번 더 묻습니다.</div><div id="pickList"></div></div>
-  <div id="home" class="hide"><div class="cls"><h2 id="clsName"></h2><a href="#" id="logout">다른 번호</a></div><div class="cls-sub">수학강사 서호근 · 최신순</div><div id="list"></div></div>
+  <div id="home" class="hide"><div class="cls"><h2 id="clsName"></h2><a href="#" id="logout">다른 번호</a></div><div id="whoLine" style="font-size:15px;font-weight:700;color:var(--red);margin:-2px 0 6px;"></div><div class="cls-sub">수학강사 서호근 · 최신순</div><div id="list"></div></div>
   <div class="foot">나의 자부심이 너의 자신감으로<br>수학강사 서호근</div>
 </div>
 <script>
@@ -67,10 +67,11 @@
   const fmt=s=>s?String(s).slice(5,10).replace('-','.'):'';
   function show(id){for(const k of ['login','pick','home','admin'])$(k).classList.toggle('hide',k!==id);}
   let ADMIN=false;
-  function adminHome(){const L=$('adminList');L.innerHTML='';for(const [cid,c] of Object.entries(D.classes)){const b=document.createElement('button');b.className='ghost';b.textContent=c.name+' ('+c.items.length+')';b.onclick=()=>{render(cid);$('logout').textContent='관리자 목록';};L.appendChild(b);}show('admin');}
+  function adminHome(){const L=$('adminList');L.innerHTML='';for(const [cid,c] of Object.entries(D.classes)){const b=document.createElement('button');b.className='ghost';b.textContent=c.name+' ('+c.items.length+')';b.onclick=()=>{WHO='';render(cid);$('logout').textContent='관리자 목록';};L.appendChild(b);}show('admin');}
   $('adminOut').onclick=e=>{e.preventDefault();ADMIN=false;$('logout').textContent='다른 번호';$('t6').value='';show('login');};
+  let WHO='';
   function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
-    $('clsName').textContent=c.name;const L=$('list');L.innerHTML='';
+    $('clsName').textContent=c.name;$('whoLine').textContent=WHO?(c.name+' '+WHO+' 학생'):(ADMIN?'관리자 보기':'');const L=$('list');L.innerHTML='';
     if(c.archived){L.innerHTML='<div class="card empty">지난 학기 반입니다. 새 반 배정은 선생님께 문의하세요.</div>';}
     if(!c.items.length){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
     for(const it of c.items){const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';
@@ -78,11 +79,11 @@
     show('home');window.scrollTo(0,0);}
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   async function enter(t6,remember){if(!D){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';return;}if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
-    const h=await sha(D.salt+':'+t6);if(D.adminHash&&h===D.adminHash){ADMIN=true;adminHome();return;}const cls=D.students[h];if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
+    const h=await sha(D.salt+':'+t6);if(D.adminHash&&h===D.adminHash){ADMIN=true;WHO='';adminHome();return;}const ent=D.students[h];const cls=(ent||[]).map(x=>x.c);const nameOf=cid=>((ent||[]).find(x=>x.c===cid)||{}).n||'';if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
     
-    if(cls.length===1){render(cls[0]);return;}
+    if(cls.length===1){WHO=nameOf(cls[0]);render(cls[0]);return;}
     
-    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=(D.classes[cid]||{}).name||cid;b.onclick=()=>render(cid);P.appendChild(b);}show('pick');}
+    const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=((D.classes[cid]||{}).name||cid)+' · '+nameOf(cid)+' 학생';b.onclick=()=>{WHO=nameOf(cid);render(cid);};P.appendChild(b);}show('pick');}
   $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
   $('logout').onclick=e=>{e.preventDefault();if(ADMIN){adminHome();return;}localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
   try{localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');}catch(e){}
