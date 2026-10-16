@@ -69,9 +69,9 @@
   function show(id){for(const k of ['login','pick','home','admin'])$(k).classList.toggle('hide',k!==id);}
   let ADMIN=false;
   function adminHome(){const L=$('adminList');L.innerHTML='';for(const [cid,c] of Object.entries(D.classes)){const b=document.createElement('button');b.className='ghost';b.textContent=c.name+' ('+c.items.length+')';b.onclick=()=>{WHO='';render(cid);$('logout').textContent='관리자 목록';};L.appendChild(b);}show('admin');}
-  $('pickBack').onclick=e=>{e.preventDefault();HASH='';WHO='';$('t6').value='';show('login');};
+  $('pickBack').onclick=e=>{e.preventDefault();HASH='';T6='';WHO='';$('t6').value='';show('login');};
   $('adminOut').onclick=e=>{e.preventDefault();ADMIN=false;$('logout').textContent='다른 번호';$('t6').value='';show('login');};
-  let WHO='', HASH='';
+  let WHO='', HASH='', T6='';
   function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
     $('clsName').textContent=c.name;$('whoLine').textContent=WHO?(c.name+' '+WHO+' 학생'):(ADMIN?'관리자 보기':'');const L=$('list');L.innerHTML='';
     if(c.archived){L.innerHTML='<div class="card empty">지난 학기 반입니다. 새 반 배정은 선생님께 문의하세요.</div>';}
@@ -88,20 +88,20 @@
           if(went){const g=new Date(went);stat='<div style="margin-top:6px;color:#b45309;font-weight:700;font-size:13px;">🕒 '+fmt(g)+' '+hm(g)+' 제출하러 이동함 — 확인 중(보통 5분 안에 ✅로 바뀜)</div>';}
           else if(late){stat='<div style="margin-top:6px;color:#c33d2e;font-weight:700;font-size:13px;">⏰ 마감 지남 — 그래도 제출할 수 있어요</div>';}
           else if(HASH&&it.subs){stat='<div style="margin-top:6px;color:var(--mute);font-size:12px;">아직 제출 전</div>';} } }
-      d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+stat+(it.url&&k[2]?'<a class="go '+k[3]+(it.kind==='form'&&it.subs&&HASH&&it.subs[HASH]?' v':'')+'" href="'+esc(it.url)+'" target="_blank" rel="noopener">'+btn+'</a>':'')+'</div>';return d;}
+      d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+stat+(it.url&&k[2]?'<a class="go '+k[3]+(it.kind==='form'&&it.subs&&HASH&&it.subs[HASH]?' v':'')+'" href="'+esc(it.kind==='form'&&it.pf&&T6?it.pf+T6:it.url)+'" target="_blank" rel="noopener">'+btn+'</a>':'')+'</div>';return d;}
     CUR=cid;
     for(const [kind,en,ko] of SEC){const its=c.items.filter(it=>it.kind===kind);if(!its.length)continue;const h=document.createElement('h2');h.className='sec';h.innerHTML=en+' <span style="letter-spacing:0;color:var(--ink);font-size:13px;margin-left:6px;">'+ko+' <span style="color:var(--mute);font-weight:500;">'+its.length+'</span></span>';L.appendChild(h);for(const it of its)L.appendChild(mk(it));}
     show('home');window.scrollTo(0,0);}
   $('list').addEventListener('click',e=>{const a=e.target.closest('a.go');if(!a)return;const card=a.closest('.it');const id=card&&card.dataset.id;if(id&&card.dataset.kind==='form'&&HASH){try{localStorage.setItem('hub_went_'+HASH+'_'+id,String(Date.now()));}catch(e){}setTimeout(()=>render(CUR),300);}}); // 리스너 1회(render마다 누적되던 것)
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   async function enter(t6,remember){if(!D){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';return;}if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
-    $('err').textContent='확인 중…';const h=await sha(t6);$('err').textContent='';HASH=h;if(D.adminHash&&h===D.adminHash){ADMIN=true;WHO='';HASH='';adminHome();return;}const ent=D.students[h];const cls=(ent||[]).map(x=>x.c);const nameOf=cid=>((ent||[]).find(x=>x.c===cid)||{}).n||'';if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
+    $('err').textContent='확인 중…';const h=await sha(t6);$('err').textContent='';HASH=h;T6=t6;if(D.adminHash&&h===D.adminHash){ADMIN=true;WHO='';HASH='';T6='';adminHome();return;}const ent=D.students[h];const cls=(ent||[]).map(x=>x.c);const nameOf=cid=>((ent||[]).find(x=>x.c===cid)||{}).n||'';if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
     
     if(cls.length===1){WHO=nameOf(cls[0]);render(cls[0]);return;}
     
     const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=((D.classes[cid]||{}).name||cid)+' · '+nameOf(cid)+' 학생';b.onclick=()=>{WHO=nameOf(cid);render(cid);};P.appendChild(b);}show('pick');}
   $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
-  $('logout').onclick=e=>{e.preventDefault();if(ADMIN){adminHome();return;}localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';show('login');};
+  $('logout').onclick=e=>{e.preventDefault();if(ADMIN){adminHome();return;}localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';T6='';show('login');};
   try{localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');}catch(e){}
   // 📱 PWA(2026-08-23 선생님 — "항상 메인에 홈 화면에 추가"): 고정 섹션. 크롬 설치 신호가 있으면 설치창, 없으면 플랫폼별 순서 안내.
   try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); }catch(e){}
