@@ -1,118 +1,255 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ffffff">
-<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="서호근수학">
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a1530">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="서호근수학">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <title>서호근 선생님 학생 허브</title>
 <style>
-  :root{--ink:#111;--mute:#6b7280;--line:#e5e7eb;--red:#c33d2e;--bg:#f6f6f4;}
-  *{box-sizing:border-box;margin:0;padding:0} body{font-family:-apple-system,"Pretendard","Malgun Gothic","맑은 고딕",system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
-  .wrap{max-width:560px;margin:0 auto;padding:18px 16px 60px}
-  .top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:8px}
-  .top b{letter-spacing:4px;font-size:14px} .top span{color:var(--mute);font-size:12px;letter-spacing:1px}
-  .hero{padding:34px 0 22px;border-bottom:1px solid var(--ink)}
-  .hero .en{color:var(--red);font-weight:700;letter-spacing:6px;font-size:12px}
-  .hero h1{font-size:46px;letter-spacing:-1.5px;line-height:1.05;margin-top:8px;font-weight:800}
-  .hero h1 small{display:block;font-size:16px;letter-spacing:0;font-weight:500;color:var(--mute);margin-top:10px}
-  .hero .tag{margin-top:16px;font-size:13px;color:var(--ink);letter-spacing:1px}
-  .hero .tag b{color:var(--red)}
-  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px;box-shadow:0 1px 0 rgba(0,0,0,.03)}
-  h2.sec{font-size:11px;letter-spacing:3px;color:var(--mute);margin:22px 0 0;border-bottom:1.2px solid var(--ink);padding-bottom:6px}
-  .login h3{font-size:18px;letter-spacing:-.3px} .sub{color:var(--mute);font-size:13px;margin:4px 0 12px}
-  input{width:100%;font-size:24px;letter-spacing:8px;text-align:center;padding:12px;border:1.5px solid var(--ink);border-radius:10px;outline:none;background:#fff}
-  input:focus{border-color:var(--red)} button{width:100%;margin-top:10px;padding:13px;font-size:16px;font-weight:700;border:0;border-radius:10px;background:var(--ink);color:#fff}
-  button.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--ink)} .err{color:var(--red);font-size:13px;margin-top:8px;min-height:18px}
-  .feat{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
-  .feat div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center}
-  .feat .ic{font-size:22px} .feat b{display:block;font-size:13px;margin-top:6px} .feat span{display:block;font-size:11px;color:var(--mute);margin-top:3px;line-height:1.4}
-  .num{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px}
-  .num .big{font-size:54px;font-weight:800;letter-spacing:-3px;line-height:.85} .num .big small{font-size:10px;letter-spacing:3px;color:var(--red);font-weight:700;margin-left:4px}
-  .num .brand{font-size:13px;font-weight:800;letter-spacing:1px}
-  .cls{display:flex;justify-content:space-between;align-items:baseline;margin:18px 0 6px} .cls h2{font-size:22px;letter-spacing:-.5px} .cls a{font-size:12px;color:var(--mute)}
-  .cls-sub{font-size:12px;color:var(--mute);letter-spacing:1px;border-bottom:1.2px solid var(--ink);padding-bottom:6px}
-  .it{display:flex;gap:12px;align-items:flex-start} .it .ic{font-size:22px;line-height:1} .it .t{font-weight:700;font-size:15px;line-height:1.35} .it .m{color:var(--mute);font-size:12px;margin-top:3px}
-  .it .due{color:var(--red);font-weight:700} .it a.go{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:8px;background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:14px}
-  .it a.go.v{background:var(--ink)} .empty{color:var(--mute);text-align:center;padding:30px 0}
-  .foot{text-align:center;color:var(--mute);font-size:11px;margin-top:34px;letter-spacing:1px;line-height:1.8}
-  .hide{display:none}
+  :root{--ink:#121214;--night:#0f0f10;--night2:#1b1b1e;--mute:#7b7f87;--mute2:#a3a6ad;--line:#e9e7e2;--red:#8b7cf6;--red-soft:#fbe9e7;--paper:#f4f2ee;--card:#fff;--ok:#157a45;--ok-soft:#e5f4ec;--warn:#a35f00;--warn-soft:#fbf1df}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:#e7e4de}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;letter-spacing:-.01em;word-break:keep-all}
+  .wrap{max-width:520px;margin:0 auto;min-height:100vh;background:var(--paper);box-shadow:0 0 60px rgba(0,0,0,.08);display:flex;flex-direction:column}
+  a{color:inherit}
+  .hide{display:none!important}
+  .view{animation:rise .5s cubic-bezier(.2,.7,.2,1)}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* 위 검은 띠 */
+  .mast{background:var(--night);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 20px 0;position:relative;overflow:hidden}
+  .bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.22em;color:var(--mute2);position:relative;z-index:1}
+  .bar .mark{display:flex;align-items:center;gap:8px;color:#fff;font-weight:600}
+  .bar .mark i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 10px var(--red)}
+  .art{position:absolute;inset:0;pointer-events:none}
+  .mast.inner .curve{display:none}
+
+  .hero{position:relative;z-index:1;padding:46px 0 58px}
+  .kicker{font-size:11px;letter-spacing:.3em;color:var(--red);font-weight:600}
+  .hero h1{font-size:56px;font-weight:500;letter-spacing:-.04em;line-height:1;margin-top:14px}
+  .hero h1 span{display:block;font-size:22px;font-weight:300;letter-spacing:-.01em;color:var(--mute2);margin-top:10px}
+  .motto{margin-top:26px;font-size:15px;line-height:1.65;color:#d9d9dc;font-weight:300;border-left:2px solid var(--red);padding-left:12px}
+  .motto em{font-style:normal;color:#fff;font-weight:600}
+
+  /* 아래 종이 판 */
+  .sheet{background:var(--paper);border-radius:24px 24px 0 0;margin-top:-24px;position:relative;z-index:2;padding:26px 18px 34px;flex:1}
+  .lab{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.26em;color:var(--mute);font-weight:600;margin:26px 2px 10px}
+  .lab:first-child{margin-top:0}
+  .lab b{color:var(--red);font-weight:600;letter-spacing:.1em}
+  .lab::after{content:"";flex:1;height:1px;background:var(--line)}
+  .lab .ko{letter-spacing:0;color:var(--ink);font-size:13px;font-weight:600}
+  .lab .n{letter-spacing:0;color:var(--mute);font-size:12px;font-weight:500}
+
+  .card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 1px 2px rgba(16,16,20,.04),0 8px 24px -12px rgba(16,16,20,.12)}
+  .card + .card{margin-top:10px}
+  .login h3{font-size:19px;font-weight:600;letter-spacing:-.02em}
+  .sub{color:var(--mute);font-size:13px;margin:5px 0 16px;line-height:1.55}
+  input{width:100%;height:66px;font:inherit;font-size:30px;font-weight:500;letter-spacing:.55em;text-indent:.55em;text-align:center;font-variant-numeric:tabular-nums;border:1.5px solid var(--line);border-radius:14px;outline:none;background:#faf9f7;color:var(--ink);transition:border-color .2s,box-shadow .2s,background .2s}
+  input::placeholder{color:#d2d0cb}
+  input:focus{border-color:var(--ink);background:#fff;box-shadow:0 0 0 4px rgba(214,35,31,.12)}
+  button{-webkit-appearance:none;appearance:none;font:inherit;width:100%;margin-top:10px;height:54px;font-size:16px;font-weight:600;border:0;border-radius:14px;background:var(--ink);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,background .2s}
+  button:active{transform:scale(.98)}
+  button svg{width:18px;height:18px}
+  #go{background:var(--red)}
+  button.ghost{background:var(--card);color:var(--ink);justify-content:space-between;padding:0 18px;height:58px;box-shadow:0 1px 2px rgba(16,16,20,.04),0 6px 18px -12px rgba(16,16,20,.18);font-weight:500}
+  button.ghost::after{content:"";width:8px;height:8px;border-right:1.6px solid var(--mute);border-top:1.6px solid var(--mute);transform:rotate(45deg)}
+  .err{color:var(--red);font-size:13px;margin-top:10px;min-height:18px;text-align:center}
+  .err a{color:var(--red);font-weight:600}
+
+  .feat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .feat div{background:var(--card);border-radius:16px;padding:16px 10px 14px;text-align:center;box-shadow:0 1px 2px rgba(16,16,20,.04)}
+  .feat .ic{width:40px;height:40px;margin:0 auto;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--red-soft);color:var(--red)}
+  .feat div:nth-child(2) .ic{background:#ececee;color:var(--ink)}
+  .feat div:nth-child(3) .ic{background:var(--warn-soft);color:var(--warn)}
+  .feat svg{width:20px;height:20px}
+  .feat b{display:block;font-size:13px;font-weight:600;margin-top:10px}
+  .feat span{display:block;font-size:11px;color:var(--mute);margin-top:4px;line-height:1.45}
+
+  .install{display:flex;gap:14px;align-items:flex-start}
+  .install .ic{flex:none;width:42px;height:42px;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center}
+  .install .ic svg{width:20px;height:20px}
+  .install b{font-size:15px;font-weight:600}
+  .install .sub{margin:3px 0 0}
+  #installBtn{height:46px;font-size:14px;margin-top:12px;background:var(--card);color:var(--ink);border:1.5px solid var(--ink)}
+  #installHow{line-height:1.7;margin:12px 0 0}
+  #installHow a{display:inline-block;margin-top:8px;padding:9px 14px;border-radius:10px;background:var(--ink);color:#fff;text-decoration:none;font-weight:600}
+
+  /* 반 화면 머리 */
+  .classhead{position:relative;z-index:1;padding:30px 0 50px}
+  .classhead .row{display:flex;justify-content:space-between;align-items:center}
+  .classhead .row a{font-size:12px;color:var(--mute2);text-decoration:none;border:1px solid #3a3a3f;border-radius:99px;padding:6px 12px}
+  .classhead h2{font-size:34px;font-weight:500;letter-spacing:-.035em;margin-top:12px;line-height:1.15}
+  #whoLine{font-size:15px;color:#d9d9dc;margin-top:6px;font-weight:300}
+  #whoLine b{color:#fff;font-weight:600}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:22px;background:#2a2a2e;border-radius:14px;overflow:hidden}
+  .stats div{background:var(--night2);padding:12px 12px 11px}
+  .stats b{display:block;font-size:24px;font-weight:500;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .stats b.hot{color:#b3a8ff}
+  .stats span{font-size:11px;color:var(--mute2);letter-spacing:.02em}
+
+  /* 목록 카드 */
+  .it{display:flex;gap:14px;align-items:flex-start}
+  .it .ic{flex:none;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--red-soft);color:var(--red)}
+  .it .ic svg{width:20px;height:20px}
+  .it.k-video .ic{background:#ececee;color:var(--ink)}
+  .it.k-notice{box-shadow:inset 3px 0 0 var(--warn),0 1px 2px rgba(16,16,20,.04),0 8px 24px -12px rgba(16,16,20,.12)}
+  .it.k-notice .ic{background:var(--warn-soft);color:var(--warn)}
+  .it .t{font-weight:600;font-size:15.5px;line-height:1.4;letter-spacing:-.02em}
+  .it .m{color:var(--mute);font-size:12px;margin-top:4px;line-height:1.5}
+  .it .due{color:var(--red);font-weight:600}
+  .st{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:99px;line-height:1.35}
+  .st::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+  .st.ok{background:var(--ok-soft);color:var(--ok)}
+  .st.wait{background:var(--warn-soft);color:var(--warn)}
+  .st.late{background:var(--red-soft);color:var(--red)}
+  .st.none{background:#f1f0ed;color:var(--mute)}
+  .it a.go{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;height:44px;border-radius:12px;background:var(--red);color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+  .it a.go svg{width:16px;height:16px}
+  .it a.go.v{background:var(--ink)}
+  .it a.go.again{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+  .empty{color:var(--mute);text-align:center;padding:34px 0;font-size:14px}
+
+  .pickhead h3{font-size:22px;font-weight:500;letter-spacing:-.03em}
+  .pickhead .sub{color:var(--mute2);margin:6px 0 0}
+  .back{display:block;text-align:center;font-size:13px;color:var(--mute);margin-top:16px;text-decoration:none}
+
+  .foot{background:var(--night);color:var(--mute2);text-align:center;font-size:11px;letter-spacing:.08em;line-height:1.9;padding:26px 16px calc(26px + env(safe-area-inset-bottom))}
+  .foot b{display:block;color:#fff;font-weight:500;font-size:13px;letter-spacing:-.01em}
+  .foot i{display:block;width:18px;height:2px;background:var(--red);margin:10px auto}
+  /* fix228 테마: 미드나잇 퍼플 + 라벤더(2026-11-21 선생님) — 마감·늦음·오류는 빨강 유지 */
+  :root{--night:#1a1530;--night2:#241e3e;--red:#8b7cf6;--red-soft:#eeebfe;--paper:#f3f2f7}
+  .bar .mark i{background:#8b7cf6;box-shadow:0 0 10px #8b7cf6} .kicker{color:#a89cff} .stats b.hot{color:#b3a8ff}
+  input:focus{box-shadow:0 0 0 4px rgba(139,124,246,.15)} #go,.it a.go:not(.v):not(.again){background:#8b7cf6;color:#fff}
+  .motto{border-left-color:#8b7cf6} .foot i{background:#8b7cf6} .lab b{color:#8b7cf6}
+  .it .due,.st.late,.err,.err a{color:#c8322b} .st.late{background:#fbe9e7} .it.k-form .ic,.feat div:first-child .ic{background:#eeebfe;color:#8b7cf6}
+  .it a.go.v,.install .ic{background:var(--night)} .it.k-video .ic,.feat div:nth-child(2) .ic{background:#ecebf3;color:#2a2350}
 </style></head><body><div class="wrap">
-  <div class="top"><b>STUDENT HUB</b><span>수학강사 서호근</span></div>
-  <div id="login">
-    <div class="hero"><h1>서호근 선생님<small>수학강사 서호근 · 학생 허브</small></h1><div class="tag">나의 <b>자부심</b>이 너의 <b>자신감</b>으로</div></div>
-    <h2 class="sec">ENTER</h2>
-    <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">수험번호 뒤 6자리를 입력하세요.</div>
-      <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
-      <button id="go">들어가기</button><div id="err" class="err"></div></div>
-    <h2 class="sec">APP</h2>
-    <div class="card" id="install" style="border-color:#111;"><b>📱 홈 화면에 추가</b><div class="sub" style="margin:4px 0 10px;">한 번 추가해 두면 앱처럼 아이콘으로 바로 열려요.</div>
-      <button id="installBtn" style="margin-top:0;">홈 화면에 추가</button>
-      <div id="installHow" class="sub hide" style="margin:10px 0 0;line-height:1.7;"></div></div>
-    <h2 class="sec">INDEX</h2>
-    <div class="feat">
-      <div><div class="ic">📮</div><b>숙제 오답폼</b><span>틀린 번호만 체크해서 제출</span></div>
-      <div><div class="ic">🎬</div><b>수업 영상</b><span>그날 수업 다시 보기</span></div>
-      <div><div class="ic">📢</div><b>공지</b><span>보강·일정 한 줄 안내</span></div>
+  <header class="mast" id="mast">
+    <svg class="art" viewBox="0 0 400 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <pattern id="g" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#fff" stroke-opacity=".045"/></pattern>
+        <radialGradient id="glow" cx="82%" cy="18%" r="60%"><stop offset="0" stop-color="#8b7cf6" stop-opacity=".38"/><stop offset="1" stop-color="#8b7cf6" stop-opacity="0"/></radialGradient>
+        <filter id="blur"><feGaussianBlur stdDeviation="3"/></filter>
+      </defs>
+      <rect width="400" height="420" fill="url(#g)"/>
+      <rect width="400" height="420" fill="url(#glow)"/>
+      <path d="M295 0V420M0 170H400" stroke="#fff" stroke-opacity=".08"/>
+      <g class="curve"><path d="M169.0 303.9L171.1 289.1L173.2 275.0L175.3 261.4L177.4 248.5L179.5 236.2L181.6 224.5L183.7 213.4L185.8 202.8L187.9 192.8L190.0 183.3L192.1 174.4L194.2 166.0L196.3 158.1L198.4 150.7L200.5 143.8L202.6 137.4L204.7 131.4L206.8 126.0L208.9 120.9L211.0 116.3L213.1 112.2L215.2 108.4L217.3 105.1L219.4 102.1L221.5 99.6L223.6 97.4L225.7 95.6L227.8 94.1L229.9 93.0L232.0 92.2L234.1 91.8L236.2 91.6L238.3 91.8L240.4 92.2L242.5 92.9L244.6 93.9L246.7 95.1L248.8 96.6L250.9 98.3L253.0 100.3L255.1 102.5L257.2 104.8L259.3 107.4L261.4 110.1L263.5 113.0L265.6 116.1L267.7 119.3L269.8 122.7L271.9 126.2L274.0 129.8L276.1 133.5L278.2 137.3L280.3 141.2L282.4 145.2L284.5 149.2L286.6 153.3L288.7 157.4L290.8 161.6L292.9 165.8L295.0 170.0L297.1 174.2L299.2 178.4L301.3 182.6L303.4 186.7L305.5 190.8L307.6 194.8L309.7 198.8L311.8 202.7L313.9 206.5L316.0 210.2L318.1 213.8L320.2 217.3L322.3 220.7L324.4 223.9L326.5 227.0L328.6 229.9L330.7 232.6L332.8 235.2L334.9 237.5L337.0 239.7L339.1 241.7L341.2 243.4L343.3 244.9L345.4 246.1L347.5 247.1L349.6 247.8L351.7 248.2L353.8 248.4L355.9 248.2L358.0 247.8L360.1 247.0L362.2 245.9L364.3 244.4L366.4 242.6L368.5 240.4L370.6 237.9L372.7 234.9L374.8 231.6L376.9 227.8L379.0 223.7L381.1 219.1L383.2 214.0L385.3 208.6L387.4 202.6L389.5 196.2L391.6 189.3L393.7 181.9L395.8 174.0L397.9 165.6L400.0 156.7L402.1 147.2L404.2 137.2L406.3 126.6L408.4 115.5L410.5 103.8L412.6 91.5L414.7 78.6L416.8 65.0L418.9 50.9L421.0 36.1" fill="none" stroke="#8b7cf6" stroke-width="6" stroke-opacity=".35" filter="url(#blur)"/>
+      <path d="M169.0 303.9L171.1 289.1L173.2 275.0L175.3 261.4L177.4 248.5L179.5 236.2L181.6 224.5L183.7 213.4L185.8 202.8L187.9 192.8L190.0 183.3L192.1 174.4L194.2 166.0L196.3 158.1L198.4 150.7L200.5 143.8L202.6 137.4L204.7 131.4L206.8 126.0L208.9 120.9L211.0 116.3L213.1 112.2L215.2 108.4L217.3 105.1L219.4 102.1L221.5 99.6L223.6 97.4L225.7 95.6L227.8 94.1L229.9 93.0L232.0 92.2L234.1 91.8L236.2 91.6L238.3 91.8L240.4 92.2L242.5 92.9L244.6 93.9L246.7 95.1L248.8 96.6L250.9 98.3L253.0 100.3L255.1 102.5L257.2 104.8L259.3 107.4L261.4 110.1L263.5 113.0L265.6 116.1L267.7 119.3L269.8 122.7L271.9 126.2L274.0 129.8L276.1 133.5L278.2 137.3L280.3 141.2L282.4 145.2L284.5 149.2L286.6 153.3L288.7 157.4L290.8 161.6L292.9 165.8L295.0 170.0L297.1 174.2L299.2 178.4L301.3 182.6L303.4 186.7L305.5 190.8L307.6 194.8L309.7 198.8L311.8 202.7L313.9 206.5L316.0 210.2L318.1 213.8L320.2 217.3L322.3 220.7L324.4 223.9L326.5 227.0L328.6 229.9L330.7 232.6L332.8 235.2L334.9 237.5L337.0 239.7L339.1 241.7L341.2 243.4L343.3 244.9L345.4 246.1L347.5 247.1L349.6 247.8L351.7 248.2L353.8 248.4L355.9 248.2L358.0 247.8L360.1 247.0L362.2 245.9L364.3 244.4L366.4 242.6L368.5 240.4L370.6 237.9L372.7 234.9L374.8 231.6L376.9 227.8L379.0 223.7L381.1 219.1L383.2 214.0L385.3 208.6L387.4 202.6L389.5 196.2L391.6 189.3L393.7 181.9L395.8 174.0L397.9 165.6L400.0 156.7L402.1 147.2L404.2 137.2L406.3 126.6L408.4 115.5L410.5 103.8L412.6 91.5L414.7 78.6L416.8 65.0L418.9 50.9L421.0 36.1" fill="none" stroke="#b3a8ff" stroke-width="1.4"/>
+      <circle cx="236.2" cy="91.6" r="3.5" fill="#fff"/><circle cx="353.8" cy="248.4" r="3.5" fill="#fff"/><circle cx="295.0" cy="170.0" r="2.5" fill="#fff" fill-opacity=".6"/></g>
+    </svg>
+    <div class="bar"><span class="mark"><i></i>SEOHOGEUN MATH</span><span>STUDENT HUB</span></div>
+
+    <div id="loginHero" class="hero view">
+      <div class="kicker">수학강사</div>
+      <h1>서호근<span>선생님 학생 허브</span></h1>
+      <p class="motto">나의 <em>자부심</em>이<br>너의 <em>자신감</em>으로</p>
     </div>
-  </div>
-  <div id="admin" class="hide"><div class="cls"><h2>👨‍🏫 관리자 보기</h2><a href="#" id="adminOut">나가기</a></div><div class="cls-sub">반을 고르면 학생이 보는 화면 그대로 열립니다</div><div id="adminList"></div></div>
-  <div id="pick" class="card hide"><h3 style="font-size:18px;">반을 골라주세요</h3><div class="sub">같은 번호의 학생이 둘 이상이라 반을 한 번 더 묻습니다.</div><div id="pickList"></div><a href="#" id="pickBack" style="display:block;text-align:center;font-size:12px;color:var(--mute);margin-top:10px;">다른 번호</a></div>
-  <div id="home" class="hide"><div class="cls"><h2 id="clsName"></h2><a href="#" id="logout">다른 번호</a></div><div id="whoLine" style="font-size:15px;font-weight:700;color:var(--red);margin:-2px 0 6px;"></div><div class="cls-sub">수학강사 서호근 · 최신순</div><div id="list"></div></div>
-  <div class="foot">나의 자부심이 너의 자신감으로<br>수학강사 서호근</div>
+    <div id="homeHead" class="classhead view hide">
+      <div class="row"><span class="kicker">MY CLASS</span><a href="#" id="logout">다른 번호</a></div>
+      <h2 id="clsName"></h2>
+      <div id="whoLine"></div>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div id="pickHead" class="classhead pickhead view hide">
+      <div class="kicker">CHOOSE</div>
+      <h3 style="margin-top:12px;">반을 골라주세요</h3>
+      <div class="sub">같은 번호의 학생이 둘 이상이라 반을 한 번 더 묻습니다.</div>
+    </div>
+    <div id="adminHead" class="classhead view hide">
+      <div class="row"><span class="kicker">ADMIN</span><a href="#" id="adminOut">나가기</a></div>
+      <h2>관리자 보기</h2>
+      <div id="adminSub" style="font-size:14px;color:var(--mute2);margin-top:6px;font-weight:300;">반을 고르면 학생이 보는 화면 그대로 열립니다</div>
+    </div>
+  </header>
+
+  <main class="sheet">
+    <div id="login" class="view">
+      <div class="lab"><b>01</b>ENTER</div>
+      <div class="card login"><h3>수험번호 뒤 6자리</h3><div class="sub">숫자 6자리를 넣으면 우리 반 자료가 열립니다.</div>
+        <input id="t6" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="000000" autocomplete="off">
+        <button id="go">들어가기 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <div id="err" class="err"></div></div>
+      <div class="lab"><b>02</b>INDEX</div>
+      <div class="feat">
+        <div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5h6M9 12l2 2 4-4"/></svg></div><b>숙제 오답폼</b><span>틀린 번호만 체크해서 제출</span></div>
+        <div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9.5v5l4-2.5z" fill="currentColor"/></svg></div><b>수업 영상</b><span>그날 수업 다시 보기</span></div>
+        <div><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6"/></svg></div><b>공지</b><span>보강·일정 한 줄 안내</span></div>
+      </div>
+      <div class="lab"><b>03</b>APP</div>
+      <div class="card" id="install"><div class="install"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M12 8v6M9 11l3 3 3-3"/></svg></div><div style="flex:1;min-width:0"><b>홈 화면에 추가</b><div class="sub">한 번 추가해 두면 앱처럼 아이콘으로 바로 열려요.</div></div></div>
+        <button id="installBtn">홈 화면에 추가</button>
+        <div id="installHow" class="sub hide"></div></div>
+    </div>
+    <div id="admin" class="view hide"><div id="adminList"></div></div>
+    <div id="pick" class="view hide"><div id="pickList"></div><a href="#" id="pickBack" class="back">다른 번호로 들어가기</a></div>
+    <div id="home" class="view hide"><div id="list"></div></div>
+  </main>
+  <footer class="foot"><b>나의 자부심이 너의 자신감으로</b><i></i>수학강사 서호근</footer>
 </div>
 <script>
 (async function(){
   const $=id=>document.getElementById(id);
-  let D=null; try{D=await (await fetch('data.json?'+Date.now(),{cache:'no-store'})).json();}catch(e){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';}
+  const RETRY='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;">다시 시도</a>';
+  let D=null; try{D=await (await fetch('data.json?'+Date.now(),{cache:'no-store'})).json();}catch(e){$('err').innerHTML=RETRY;}
   async function sha(t6){const enc=new TextEncoder();const key=await crypto.subtle.importKey('raw',enc.encode(t6),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:enc.encode(D.salt),iterations:200000},key,160);return [...new Uint8Array(bits)].map(x=>x.toString(16).padStart(2,'0')).join('');}
-  const KIND={form:['📮','숙제 오답폼','제출하기',''],video:['🎬','수업 영상','영상 보기','v'],notice:['📢','공지','','']};
-  const fmt=s=>{if(!s)return '';const t=new Date(/^d{4}-d{2}-d{2}$/.test(s)?s+'T00:00:00':s);if(isNaN(t))return String(s).slice(5,10).replace('-','.');return String(t.getMonth()+1).padStart(2,'0')+'.'+String(t.getDate()).padStart(2,'0');};
+  const SV=p=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
+  const ICON={form:SV('<rect x="5" y="4" width="14" height="17" rx="2.5"/><path d="M9 4.5h6M9 12l2 2 4-4"/>'),video:SV('<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9.5v5l4-2.5z" fill="currentColor"/>'),notice:SV('<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6"/>'),doc:SV('<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/>')};
+  const ARROW=SV('<path d="M5 12h14M13 6l6 6-6 6"/>');
+  const KIND={form:['form','숙제 오답폼','제출하기',''],video:['video','수업 영상','영상 보기','v'],notice:['notice','공지','','']};
+  const fmt=s=>{if(!s)return '';const t=new Date(/^\d{4}-\d{2}-\d{2}$/.test(s)?s+'T00:00:00':s);if(isNaN(t))return String(s).slice(5,10).replace('-','.');return String(t.getMonth()+1).padStart(2,'0')+'.'+String(t.getDate()).padStart(2,'0');};
   const hm=t=>String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');let CUR='';
-  function show(id){for(const k of ['login','pick','home','admin'])$(k).classList.toggle('hide',k!==id);}
+  // 화면 전환: 본문(login/pick/home/admin)과 위 검은 띠 머리를 함께 바꾼다
+  const HEAD={login:'loginHero',pick:'pickHead',home:'homeHead',admin:'adminHead'};
+  function show(id){for(const k of ['login','pick','home','admin']){$(k).classList.toggle('hide',k!==id);$(HEAD[k]).classList.toggle('hide',k!==id);}$('mast').classList.toggle('inner',id!=='login');}
   let ADMIN=false;
-  function adminHome(){const L=$('adminList');L.innerHTML='';for(const [cid,c] of Object.entries(D.classes)){const b=document.createElement('button');b.className='ghost';b.textContent=c.name+' ('+c.items.length+')';b.onclick=()=>{WHO='';render(cid);$('logout').textContent='관리자 목록';};L.appendChild(b);}show('admin');}
+  function adminHome(){const L=$('adminList');L.innerHTML='';for(const [cid,c] of Object.entries(D.classes)){const b=document.createElement('button');b.className='ghost';b.textContent=c.name+' ('+c.items.length+')';b.onclick=()=>{WHO='';render(cid);$('logout').textContent='관리자 목록';};L.appendChild(b);}show('admin');window.scrollTo(0,0);}
   $('pickBack').onclick=e=>{e.preventDefault();HASH='';T6='';WHO='';$('t6').value='';show('login');};
   $('adminOut').onclick=e=>{e.preventDefault();ADMIN=false;$('logout').textContent='다른 번호';$('t6').value='';show('login');};
   let WHO='', HASH='', T6='';
+  const done=it=>!!(it.subs&&HASH&&it.subs[HASH]);
   function render(cid){const c=D.classes[cid];if(!c){show('login');$('err').textContent='반 정보가 없습니다. 선생님께 문의하세요.';return;}
-    $('clsName').textContent=c.name;$('whoLine').textContent=WHO?(c.name+' '+WHO+' 학생'):(ADMIN?'관리자 보기':'');const L=$('list');L.innerHTML='';
+    $('clsName').textContent=c.name;$('whoLine').innerHTML=WHO?('<b>'+esc(WHO)+'</b> 학생, 반가워요'):(ADMIN?'관리자 보기':'');const L=$('list');L.innerHTML='';
+    // 머리 숫자 3칸: 남은 오답폼(관리자 보기=전체 폼) · 수업 영상 · 공지
+    const nForm=c.items.filter(it=>it.kind==='form'&&(ADMIN||!done(it))).length,nVid=c.items.filter(it=>it.kind==='video').length,nNot=c.items.filter(it=>it.kind==='notice').length;
+    $('stats').innerHTML='<div><b class="'+(nForm&&!ADMIN?'hot':'')+'">'+nForm+'</b><span>'+(ADMIN?'오답폼':'남은 오답폼')+'</span></div><div><b>'+nVid+'</b><span>수업 영상</span></div><div><b>'+nNot+'</b><span>공지</span></div>';
     if(c.archived){L.innerHTML='<div class="card empty">지난 학기 반입니다. 새 반 배정은 선생님께 문의하세요.</div>';}
     if(!c.items.length&&!c.archived){L.innerHTML='<div class="card empty">아직 올라온 내용이 없어요.</div>';}
-    // 구역 나누기(2026-08-23 선생님 — "오답 제출 / 수업 영상 다시보기"로 구분): 📢 공지 → 📮 오답 제출 → 🎬 수업 영상 다시보기
-    const SEC=[['notice','NOTICE','📢 공지'],['form','HOMEWORK','📮 오답 제출'],['video','REPLAY','🎬 수업 영상 다시보기']];
-    const mk=(it)=>{const k=KIND[it.kind]||['📄','',''];const d=document.createElement('div');d.className='card it';d.dataset.id=it.id;d.dataset.kind=it.kind;
-      // ✅ 제출 상태(폼): 제출 완료 시각 / 마감 지남(그래도 제출 가능 — 선생님 "실수로 늦을 수도")
-      let stat='';let btn=k[2];
+    // 구역 나누기(2026-08-23 선생님 — "오답 제출 / 수업 영상 다시보기"로 구분): 공지 → 오답 제출 → 수업 영상 다시보기
+    const SEC=[['notice','NOTICE','공지'],['form','HOMEWORK','오답 제출'],['video','REPLAY','수업 영상 다시보기']];
+    const mk=(it)=>{const k=KIND[it.kind]||['doc','',''];const d=document.createElement('div');d.className='card it k-'+k[0];d.dataset.id=it.id;d.dataset.kind=it.kind;
+      // 제출 상태(폼): 제출 완료 시각 / 마감 지남(그래도 제출 가능 — 선생님 "실수로 늦을 수도")
+      let stat='';let btn=k[2];let again=false;
       if(it.kind==='form'){const ts=it.subs&&HASH&&it.subs[HASH];const late=it.due&&(new Date(it.due+'T23:59:59')<new Date());
         const wk='hub_went_'+HASH+'_'+it.id;
-        if(ts){try{localStorage.removeItem(wk);}catch(e){} const t=new Date(ts);stat='<div style="margin-top:6px;color:#16a34a;font-weight:700;font-size:13px;">✅ '+fmt(ts)+' '+hm(t)+' 제출 완료</div>';btn='다시 제출하기';}
+        if(ts){try{localStorage.removeItem(wk);}catch(e){} const t=new Date(ts);stat='<div class="st ok">'+fmt(ts)+' '+hm(t)+' 제출 완료</div>';btn='다시 제출하기';again=true;}
         else { let went=null; try{ went=+localStorage.getItem(wk)||0; if(!HASH||Date.now()-went>30*60000){went=0;localStorage.removeItem(wk);} }catch(e){}
-          if(went){const g=new Date(went);stat='<div style="margin-top:6px;color:#b45309;font-weight:700;font-size:13px;">🕒 '+fmt(g)+' '+hm(g)+' 제출하러 이동함 — 확인 중(보통 5분 안에 ✅로 바뀜)</div>';}
-          else if(late){stat='<div style="margin-top:6px;color:#c33d2e;font-weight:700;font-size:13px;">⏰ 마감 지남 — 그래도 제출할 수 있어요</div>';}
-          else if(HASH&&it.subs){stat='<div style="margin-top:6px;color:var(--mute);font-size:12px;">아직 제출 전</div>';} } }
-      d.innerHTML='<div class="ic">'+k[0]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+stat+(it.url&&k[2]?'<a class="go '+k[3]+(it.kind==='form'&&it.subs&&HASH&&it.subs[HASH]?' v':'')+'" href="'+esc(it.kind==='form'&&it.pf&&T6?it.pf+T6:it.url)+'" target="_blank" rel="noopener">'+btn+'</a>':'')+'</div>';return d;}
+          if(went){const g=new Date(went);stat='<div class="st wait">'+fmt(g)+' '+hm(g)+' 제출하러 이동함 — 확인 중(보통 5분 안에 완료로 바뀜)</div>';}
+          else if(late){stat='<div class="st late">마감 지남 — 그래도 제출할 수 있어요</div>';}
+          else if(HASH&&it.subs){stat='<div class="st none">아직 제출 전</div>';} } }
+      d.innerHTML='<div class="ic">'+ICON[k[0]]+'</div><div style="flex:1;min-width:0"><div class="t">'+esc(it.title)+'</div><div class="m">'+k[1]+(it.assign?' · 내준 날 '+fmt(it.assign):'')+(it.due?' · <span class="due">마감 '+fmt(it.due)+'</span>':'')+(it.at&&!it.assign?' · '+fmt(it.at):'')+'</div>'+stat+(it.url&&k[2]?'<a class="go '+k[3]+(again?' again':'')+'" href="'+esc(it.kind==='form'&&it.pf&&T6?it.pf+T6:it.url)+'" target="_blank" rel="noopener">'+btn+ARROW+'</a>':'')+'</div>';return d;}
     CUR=cid;
-    for(const [kind,en,ko] of SEC){const its=c.items.filter(it=>it.kind===kind);if(!its.length)continue;const h=document.createElement('h2');h.className='sec';h.innerHTML=en+' <span style="letter-spacing:0;color:var(--ink);font-size:13px;margin-left:6px;">'+ko+' <span style="color:var(--mute);font-weight:500;">'+its.length+'</span></span>';L.appendChild(h);for(const it of its)L.appendChild(mk(it));}
+    for(const [kind,en,ko] of SEC){const its=c.items.filter(it=>it.kind===kind);if(!its.length)continue;const h=document.createElement('div');h.className='lab';h.innerHTML='<b>'+en+'</b><span class="ko">'+ko+'</span><span class="n">'+its.length+'</span>';L.appendChild(h);for(const it of its)L.appendChild(mk(it));}
     show('home');window.scrollTo(0,0);}
-  $('list').addEventListener('click',e=>{const a=e.target.closest('a.go');if(!a)return;const card=a.closest('.it');const id=card&&card.dataset.id;if(id&&card.dataset.kind==='form'&&HASH){try{localStorage.setItem('hub_went_'+HASH+'_'+id,String(Date.now()));}catch(e){}setTimeout(()=>render(CUR),300);}}); // 리스너 1회(render마다 누적되던 것)
+  $('list').addEventListener('click',e=>{const a=e.target.closest('a.go');if(!a)return;const card=a.closest('.it');const id=card&&card.dataset.id;if(id&&card.dataset.kind==='form'&&HASH){try{localStorage.setItem('hub_went_'+HASH+'_'+id,String(Date.now()));}catch(e){}setTimeout(()=>render(CUR),300);}});
   function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-  async function enter(t6,remember){if(!D){$('err').innerHTML='자료를 불러오지 못했습니다. <a href="#" onclick="location.reload();return false;" style="color:#c33d2e;font-weight:700;">다시 시도</a>';return;}if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
+  async function enter(t6,remember){if(!D){$('err').innerHTML=RETRY;return;}if(!/^\d{6}$/.test(t6)){$('err').textContent='숫자 6자리를 입력하세요.';return;}
     $('err').textContent='확인 중…';const h=await sha(t6);$('err').textContent='';HASH=h;T6=t6;if(D.adminHash&&h===D.adminHash){ADMIN=true;WHO='';HASH='';T6='';adminHome();return;}const ent=D.students[h];const cls=(ent||[]).map(x=>x.c);const nameOf=cid=>((ent||[]).find(x=>x.c===cid)||{}).n||'';if(!cls||!cls.length){$('err').textContent='등록되지 않은 번호예요. 수험번호 뒤 6자리를 다시 확인해 주세요.';localStorage.removeItem('hub_t6');return;}
-    
     if(cls.length===1){WHO=nameOf(cls[0]);render(cls[0]);return;}
-    
     const P=$('pickList');P.innerHTML='';for(const cid of cls){const b=document.createElement('button');b.className='ghost';b.textContent=((D.classes[cid]||{}).name||cid)+' · '+nameOf(cid)+' 학생';b.onclick=()=>{WHO=nameOf(cid);render(cid);};P.appendChild(b);}show('pick');}
   $('go').onclick=()=>enter($('t6').value.trim(),true);$('t6').addEventListener('keydown',e=>{if(e.key==='Enter')enter($('t6').value.trim(),true);});
   $('logout').onclick=e=>{e.preventDefault();if(ADMIN){adminHome();return;}localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');$('t6').value='';T6='';show('login');};
   try{localStorage.removeItem('hub_t6');localStorage.removeItem('hub_cls');}catch(e){}
-  // 📱 PWA(2026-08-23 선생님 — "항상 메인에 홈 화면에 추가"): 고정 섹션. 크롬 설치 신호가 있으면 설치창, 없으면 플랫폼별 순서 안내.
+  // PWA(2026-08-23 선생님 — "항상 메인에 홈 화면에 추가"): 고정 섹션. 크롬 설치 신호가 있으면 설치창, 없으면 플랫폼별 순서 안내.
   try{ if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); }catch(e){}
   const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   const ua=navigator.userAgent; const isIOS=/iphone|ipad|ipod/i.test(ua); const isAndroid=/android/i.test(ua); const inApp=/KAKAOTALK|NAVER|Instagram|FBAN|FBAV|Line[/]/i.test(ua);
   let deferred=null; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;});
-  if(standalone){ $('install').innerHTML='<b>✅ 앱으로 열렸어요</b><div class="sub" style="margin-top:4px;">홈 화면 아이콘으로 잘 들어왔습니다.</div>'; }
+  if(standalone){ $('install').innerHTML='<div class="install"><div class="ic">'+SV('<path d="M5 12l5 5 9-10"/>')+'</div><div><b>앱으로 열렸어요</b><div class="sub">홈 화면 아이콘으로 잘 들어왔습니다.</div></div></div>'; }
   if($('installBtn')) $('installBtn').onclick=async()=>{
     const how=$('installHow'); how.classList.remove('hide');
     if(deferred){ try{ deferred.prompt(); await deferred.userChoice; }catch(e){} deferred=null; how.innerHTML='설치창에서 <b>설치</b>를 누르면 홈 화면에 아이콘이 생겨요.'; return; }
-    if(inApp&&isAndroid){ how.innerHTML='카톡 안에서는 추가가 안 돼요. 아래 버튼으로 <b>크롬에서 열기</b> → 크롬에서 다시 [홈 화면에 추가]를 누르세요.<br><a href="intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;end" style="display:inline-block;margin-top:8px;padding:9px 14px;border-radius:8px;background:#111;color:#fff;text-decoration:none;font-weight:700;">크롬에서 열기</a>'; return; }
+    if(inApp&&isAndroid){ how.innerHTML='카톡 안에서는 추가가 안 돼요. 아래 버튼으로 <b>크롬에서 열기</b> → 크롬에서 다시 [홈 화면에 추가]를 누르세요.<br><a href="intent://'+location.host+location.pathname+'#Intent;scheme=https;package=com.android.chrome;end">크롬에서 열기</a>'; return; }
     if(inApp&&isIOS){ how.innerHTML='카톡 안에서는 추가가 안 돼요. 오른쪽 아래 <b>⋯</b> → <b>Safari로 열기</b> → Safari에서 아래 <b>공유(□↑)</b> → <b>홈 화면에 추가</b>'; return; }
     if(isIOS){ how.innerHTML='아래 <b>공유(□↑)</b> 버튼 → 목록에서 <b>홈 화면에 추가</b> → <b>추가</b>'; return; }
     how.innerHTML='크롬 오른쪽 위 <b>⋮ 메뉴</b> → <b>홈 화면에 추가</b>(또는 <b>앱 설치</b>) → <b>추가</b>';
